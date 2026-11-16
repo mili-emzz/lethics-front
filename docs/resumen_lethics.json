@@ -1,0 +1,161 @@
+{
+  "resumen_proyecto": {
+    "nombre": "Lethics 1.0",
+    "proposito": "Software educativo web diseñado para el aprendizaje autodidacta sobre ética, principios, leyes y normas que rigen el desarrollo de software.",
+    "usuarios_objetivo": [
+      "Usuario estudiante/profesional (frecuencia de uso alta, 17+ años)",
+      "Usuario casual (frecuencia de uso media-baja, 17+ años)"
+    ],
+    "stack_tecnologico": {
+      "framework": "Next.js 16.4.5 (App Router)",
+      "libreria_ui": "React 19.3.0",
+      "lenguaje": "TypeScript 5",
+      "estilos": "Tailwind CSS v4",
+      "formularios_y_validacion": [
+        "react-hook-form 7.91.0",
+        "@hookform/resolvers 7.0.2",
+        "zod 4.6.7"
+      ],
+      "animaciones_e_iconos": [
+        "framer-motion 14.9.1",
+        "lucide-react 1.68.0"
+      ],
+      "graficas_y_notificaciones": [
+        "recharts 3.10.1",
+        "sonner 2.0.8"
+      ],
+      "utilidades": [
+        "date-fns 4.4.0",
+        "clsx 2.1.1",
+        "tailwind-merge 3.7.0"
+      ]
+    },
+    "estructura_curso": {
+      "modulos": 5,
+      "actividades_por_modulo": [
+        "leccion (solo lectura con autoguardado de progreso)",
+        "flashcards (tarjetas interactivas con giro y barajado aleatorio)",
+        "cuestionario (opción múltiple)",
+        "simulador (casos reales con retroalimentación cualitativa de IA)"
+      ],
+      "cierre_curso": [
+        "proyecto final (carga de archivo o enlace a repositorio)",
+        "examen final global"
+      ],
+      "componentes_transversales": [
+        "panel de progreso global",
+        "sistema de racha por días activos",
+        "historial de porcentajes e intentos",
+        "manual de usuario"
+      ]
+    },
+    "requerimientos_funcionales": {
+      "7.1": "Registro en 3 pasos, inicio de sesión y verificación de correo electrónico con enlace de un solo uso y vigencia máxima de 5 minutos.",
+      "7.2": "Panel de progreso del curso con avance global, estado de los 5 módulos, bloqueo visual por prerrequisitos y autoguardado para reanudar lecciones desde el punto exacto.",
+      "7.3": "Cuestionarios de opción múltiple al final de cada módulo con registro automático de calificación y repetición permitida si no se aprueba.",
+      "7.4": "Simuladores de casos reales que exigen una respuesta o actitud ética antes de avanzar a la retroalimentación.",
+      "7.5": "Retroalimentación cualitativa en simuladores consumiendo un servicio externo de Inteligencia Artificial y manejo de errores si no está disponible.",
+      "7.6": "Historial cronológico de cuestionarios y simuladores con filtros por módulo o calificación y almacenamiento independiente de cada intento.",
+      "7.7": "Tarjetas de aprendizaje (Flashcards) interactivas con animación de giro, navegación por mazo y modo de repaso aleatorio.",
+      "7.8_proyecto": "Proyecto al final del curso con subida de archivo (validado en peso y formato) o enlace a repositorio externo.",
+      "7.8_examen": "Examen final global habilitado solo tras completar el 100% de los 5 módulos y entregar el proyecto final."
+    },
+    "reglas_negocio": {
+      "RN-01": "Acceso exclusivo a usuarios registrados, autenticados y con correo verificado (enlace vigente máximo 5 minutos).",
+      "RN-02": "Secuencialidad obligatoria en los 5 módulos: requiere aprobar el cuestionario y completar el simulador del módulo anterior.",
+      "RN-03": "Calificación mínima aprobatoria del 70% de aciertos en cuestionarios y examen final.",
+      "RN-04": "Intentos ilimitados en cuestionarios teóricos de opción múltiple, registrando cada intento en el historial.",
+      "RN-05": "Acceso bloqueado al proyecto final y examen final hasta lograr 100% de finalización en los 5 módulos previos (y proyecto entregado para habilitar examen).",
+      "RN-06": "La Inteligencia Artificial en simuladores ofrece retroalimentación cualitativa y no asigna calificación numérica directa sobre el porcentaje del módulo.",
+      "RN-07": "Usuarios finales solo tienen permisos de lectura sobre el material didáctico y escritura únicamente en apartados de evaluación."
+    }
+  },
+  "decisiones_tomadas": {
+    "metodologia_verificacion": "Arquitectura validada aplicando Self-Consistency (comparando capas técnicas, colocación total y enfoque modular por dominio) y Chain-of-Verification (CoVe) contra requerimientosLethics.md y las convenciones de Next.js 16.",
+    "alcance_actual": "Trabajar inicialmente solo la arquitectura modular de carpetas dentro de src/ y mantener docs/resumen_lethics.json como archivo de guardado de progreso en cada avance.",
+    "desacoplamiento_backend": "No existe backend todavía. Se separa src/services/ en contracts/, mocks/ y api/ (patrón Adaptador) para operar hoy con datos locales/simulados y conectar después la API REST y la IA sin modificar la interfaz.",
+    "aislamiento_reglas": "Las reglas de negocio puras (RN-01 a RN-07, mínimo 70%, candados secuenciales, vigencia de 5 min y cálculo de racha) vivirán en src/lib/rules/, separadas del estado en React (src/context/).",
+    "convenciones_nextjs_16": "Uso de Route Groups (auth) y (plataforma) dentro de src/app/, inclusión explícita de la ruta manual/ para usabilidad y uso futuro de proxy.ts en lugar de middleware.ts.",
+    "restricciones": [
+      "No agregar ni modificar archivos en public/ sin autorización explícita de la usuaria.",
+      "No implementar código ni crear aún las carpetas hasta confirmar el cierre de la planeación.",
+      "Regla obligatoria de desarrollo: Después de cada implementación o avance en el proyecto, se debe actualizar obligatoriamente este archivo (docs/resumen_lethics.json) con las decisiones tomadas, el estado actual, las tareas completadas y el siguiente paso pendiente.",
+      "Protección estricta de variables de entorno: Nunca commitear archivos .env ni exponer secretos en el cliente.",
+      "Flujo de GitHub: Commits atómicos por cada bloque funcional terminado citando RF/RN y push a la rama de trabajo."
+    ],
+    "reglas_modulares_implementadas": [
+      ".agents/rules/01-reglas-negocio-backend.md",
+      ".agents/rules/02-ia-simuladores.md",
+      ".agents/rules/03-progreso-resiliencia.md",
+      ".agents/rules/04-seguridad-privacidad-env.md",
+      ".agents/rules/05-ui-accesibilidad-rendimiento.md",
+      ".agents/rules/06-flujo-git-trazabilidad-limites.md"
+    ],
+    "arbol_carpetas_aprobado": {
+      "raiz": "lethics-frontend/src",
+      "carpetas": {
+        "app": {
+          "(auth)": [
+            "login",
+            "registro",
+            "verificar-correo"
+          ],
+          "(plataforma)": [
+            "dashboard",
+            "modulos/[moduloId]/leccion",
+            "modulos/[moduloId]/flashcards",
+            "modulos/[moduloId]/cuestionario",
+            "modulos/[moduloId]/simulador",
+            "proyecto-final",
+            "examen-final",
+            "historial",
+            "manual"
+          ]
+        },
+        "components": {
+          "ui": "Componentes base reutilizables (botones, modales, banners, inputs, barras de progreso)",
+          "layout": "Encabezado fijo, navegación, indicador de racha y porcentaje de avance global",
+          "auth": "Formularios de login, registro en 3 pasos y verificación de 5 min",
+          "dashboard": "Mapa de los 5 módulos, estados y candados",
+          "modulos": [
+            "leccion",
+            "flashcards",
+            "cuestionario",
+            "simulador"
+          ],
+          "cierre": "Entrega de proyecto final y examen final",
+          "historial": "Tabla filtrable y gráfica de curva de mejora"
+        },
+        "context": "Estado global en React (sesión activa, progreso del curso y racha)",
+        "hooks": "Hooks reutilizables (autoguardado, temporizador 5 min, conectividad)",
+        "services": {
+          "contracts": "Interfaces de los servicios (contratos de entrada/salida)",
+          "mocks": "Datos semilla y persistencia local temporal sin backend",
+          "api": "Cliente HTTP REST futuro para backend e IA"
+        },
+        "lib": {
+          "rules": "Reglas de negocio puras (RN-01 a RN-07, cálculo de 70% y candados)",
+          "validations": "Esquemas de validación con Zod",
+          "utils": "Funciones auxiliares de formato, fechas y clases CSS"
+        },
+        "types": "Definiciones de tipos de dominio en TypeScript"
+      }
+    }
+  },
+  "ultima_implementacion": {
+    "fecha_actualizacion": "2026-11-16",
+    "estado_actual": "Estructura modular de 31 carpetas creada exitosamente en lethics-frontend/src/ y verificada con linter y build de Next.js 16 (0 errores).",
+    "implementado_hasta_ahora": [
+      "Inicialización del proyecto Next.js 16.4.5 con TypeScript y Tailwind CSS v4 en lethics-frontend/",
+      "Instalación de dependencias base en package.json (react-hook-form, zod, framer-motion, lucide-react, recharts, sonner, date-fns, clsx, tailwind-merge)",
+      "Definición y verificación de la arquitectura modular de carpetas con Self-Consistency y CoVe",
+      "Creación del archivo de guardado de progreso docs/resumen_lethics.json",
+      "Estructuración de AGENTS.md con comandos rápidos, reglas de arquitectura, límites de 3 niveles y definición de terminado",
+      "Creación de los 6 módulos de reglas en .agents/rules/ cubriendo negocio, IA, progreso, seguridad/.env, UI/accesibilidad y flujo de GitHub/trazabilidad",
+      "Enlace y sincronización de las reglas modulares dentro de AGENTS.md",
+      "Creación física del árbol modular de 31 carpetas dentro de lethics-frontend/src/ (rutas, componentes por dominio, servicios desacoplados, reglas puras y tipos)",
+      "Verificación de compilación (npm run build) y linter (npm run lint) en Next.js 16 pasando al 100% sin errores"
+    ],
+    "siguiente_paso_pendiente": "Definir tipos de dominio en src/types/ y contratos de servicios en src/services/contracts/."
+  }
+}
