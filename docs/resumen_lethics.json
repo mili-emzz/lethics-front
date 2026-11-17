@@ -18,7 +18,8 @@
       ],
       "animaciones_e_iconos": [
         "framer-motion 14.9.1",
-        "lucide-react 1.68.0"
+        "lucide-react 1.68.0",
+        "morphicons 2.0.2"
       ],
       "graficas_y_notificaciones": [
         "recharts 3.10.1",
@@ -71,91 +72,34 @@
     }
   },
   "decisiones_tomadas": {
-    "metodologia_verificacion": "Arquitectura validada aplicando Self-Consistency (comparando capas técnicas, colocación total y enfoque modular por dominio) y Chain-of-Verification (CoVe) contra requerimientosLethics.md y las convenciones de Next.js 16.",
-    "alcance_actual": "Trabajar inicialmente solo la arquitectura modular de carpetas dentro de src/ y mantener docs/resumen_lethics.json como archivo de guardado de progreso en cada avance.",
-    "desacoplamiento_backend": "No existe backend todavía. Se separa src/services/ en contracts/, mocks/ y api/ (patrón Adaptador) para operar hoy con datos locales/simulados y conectar después la API REST y la IA sin modificar la interfaz.",
-    "aislamiento_reglas": "Las reglas de negocio puras (RN-01 a RN-07, mínimo 70%, candados secuenciales, vigencia de 5 min y cálculo de racha) vivirán en src/lib/rules/, separadas del estado en React (src/context/).",
-    "convenciones_nextjs_16": "Uso de Route Groups (auth) y (plataforma) dentro de src/app/, inclusión explícita de la ruta manual/ para usabilidad y uso futuro de proxy.ts en lugar de middleware.ts.",
-    "restricciones": [
-      "No agregar ni modificar archivos en public/ sin autorización explícita de la usuaria.",
-      "No implementar código ni crear aún las carpetas hasta confirmar el cierre de la planeación.",
-      "Regla obligatoria de desarrollo: Después de cada implementación o avance en el proyecto, se debe actualizar obligatoriamente este archivo (docs/resumen_lethics.json) con las decisiones tomadas, el estado actual, las tareas completadas y el siguiente paso pendiente.",
-      "Protección estricta de variables de entorno: Nunca commitear archivos .env ni exponer secretos en el cliente.",
-      "Flujo de GitHub: Commits atómicos por cada bloque funcional terminado citando RF/RN y push a la rama de trabajo."
-    ],
-    "reglas_modulares_implementadas": [
-      ".agents/rules/01-reglas-negocio-backend.md",
-      ".agents/rules/02-ia-simuladores.md",
-      ".agents/rules/03-progreso-resiliencia.md",
-      ".agents/rules/04-seguridad-privacidad-env.md",
-      ".agents/rules/05-ui-accesibilidad-rendimiento.md",
-      ".agents/rules/06-flujo-git-trazabilidad-limites.md"
-    ],
-    "arbol_carpetas_aprobado": {
-      "raiz": "lethics-frontend/src",
-      "carpetas": {
-        "app": {
-          "(auth)": [
-            "login",
-            "registro",
-            "verificar-correo"
-          ],
-          "(plataforma)": [
-            "dashboard",
-            "modulos/[moduloId]/leccion",
-            "modulos/[moduloId]/flashcards",
-            "modulos/[moduloId]/cuestionario",
-            "modulos/[moduloId]/simulador",
-            "proyecto-final",
-            "examen-final",
-            "historial",
-            "manual"
-          ]
-        },
-        "components": {
-          "ui": "Componentes base reutilizables (botones, modales, banners, inputs, barras de progreso)",
-          "layout": "Encabezado fijo, navegación, indicador de racha y porcentaje de avance global",
-          "auth": "Formularios de login, registro en 3 pasos y verificación de 5 min",
-          "dashboard": "Mapa de los 5 módulos, estados y candados",
-          "modulos": [
-            "leccion",
-            "flashcards",
-            "cuestionario",
-            "simulador"
-          ],
-          "cierre": "Entrega de proyecto final y examen final",
-          "historial": "Tabla filtrable y gráfica de curva de mejora"
-        },
-        "context": "Estado global en React (sesión activa, progreso del curso y racha)",
-        "hooks": "Hooks reutilizables (autoguardado, temporizador 5 min, conectividad)",
-        "services": {
-          "contracts": "Interfaces de los servicios (contratos de entrada/salida)",
-          "mocks": "Datos semilla y persistencia local temporal sin backend",
-          "api": "Cliente HTTP REST futuro para backend e IA"
-        },
-        "lib": {
-          "rules": "Reglas de negocio puras (RN-01 a RN-07, cálculo de 70% y candados)",
-          "validations": "Esquemas de validación con Zod",
-          "utils": "Funciones auxiliares de formato, fechas y clases CSS"
-        },
-        "types": "Definiciones de tipos de dominio en TypeScript"
-      }
+    "metodologia_verificacion": "Arquitectura validada aplicando Self-Consistency y CoVe contra requerimientosLethics.md y Next.js 16.",
+    "desacoplamiento_backend": "Implementación 100% frontend basada en contratos en src/services/contracts/ y persistencia simulada en src/services/mocks/ con LocalStorage y datos semilla realistas.",
+    "aislamiento_reglas": "Reglas de negocio puras (RN-01 a RN-07) implementadas en src/lib/rules/.",
+    "diseno_figma": {
+      "fileKey": "bu0YqNIbyAIZb3OY7jbAYY",
+      "url": "https://www.figma.com/design/bu0YqNIbyAIZb3OY7jbAYY/Lethics"
     }
   },
   "ultima_implementacion": {
-    "fecha_actualizacion": "2026-11-16",
-    "estado_actual": "Estructura modular de 31 carpetas creada exitosamente en lethics-frontend/src/ y verificada con linter y build de Next.js 16 (0 errores).",
+    "fecha_actualizacion": "2026-11-17",
+    "estado_actual": "Implementación autónoma integral y 100% funcional de todas las vistas, flujos de usuario, diseño Figma, reglas de negocio y contratos en la rama implementacion-vistas.",
     "implementado_hasta_ahora": [
-      "Inicialización del proyecto Next.js 16.4.5 con TypeScript y Tailwind CSS v4 en lethics-frontend/",
-      "Instalación de dependencias base en package.json (react-hook-form, zod, framer-motion, lucide-react, recharts, sonner, date-fns, clsx, tailwind-merge)",
-      "Definición y verificación de la arquitectura modular de carpetas con Self-Consistency y CoVe",
-      "Creación del archivo de guardado de progreso docs/resumen_lethics.json",
-      "Estructuración de AGENTS.md con comandos rápidos, reglas de arquitectura, límites de 3 niveles y definición de terminado",
-      "Creación de los 6 módulos de reglas en .agents/rules/ cubriendo negocio, IA, progreso, seguridad/.env, UI/accesibilidad y flujo de GitHub/trazabilidad",
-      "Enlace y sincronización de las reglas modulares dentro de AGENTS.md",
-      "Creación física del árbol modular de 31 carpetas dentro de lethics-frontend/src/ (rutas, componentes por dominio, servicios desacoplados, reglas puras y tipos)",
-      "Verificación de compilación (npm run build) y linter (npm run lint) en Next.js 16 pasando al 100% sin errores"
+      "Creación de la rama de trabajo implementacion-vistas",
+      "Tipos de dominio completos en TypeScript estricto en src/types/ (sin 'any')",
+      "Contratos desacoplados de servicios en src/services/contracts/",
+      "Reglas de negocio puras en src/lib/rules/ (RN-01 a RN-07)",
+      "Esquemas de validación Zod en src/lib/validations/ (Login, Registro 3 pasos, Verificación 5 min, Simulador, Proyecto Final)",
+      "Capa mock con datos semilla pedagógicos realistas para los 5 módulos, lecciones, flashcards, simuladores y cuestionarios",
+      "Contexto global React en src/context/AppContext.tsx gestionando sesión, racha y progreso en tiempo real",
+      "Componentes UI base en src/components/ui/ con tokens oficiales de DESIGN.md (Boton, Input, Tarjeta, Badge, BarraProgreso, Modal)",
+      "Componentes de Layout: Header persistente con racha (#FFB006), porcentaje y avatar, BottomNav responsivo y Footer",
+      "Flujo de autenticación (auth): Landing Page pública, Login, Registro en 3 pasos, Recuperación y Verificación con temporizador de 5 minutos",
+      "Dashboard: Portada de bienvenida, reanudación inteligente de módulo y mapa de los 5 módulos con tarjetas de estado",
+      "Detalle de Módulo: CursoInfo con objetivos y plan, Lección con autoguardado de secciones, Flashcards con giro 3D y barajado, Simulador con retroalimentación IA cualitativa, Cuestionario con regla del 70% e historial de intentos",
+      "Cierre de Curso: Proyecto Final con carga/enlace validado por Zod, Examen Final Integrador condicionado a 100% y entrega, e Historial con curva de aprendizaje en Recharts",
+      "Manual de usuario con guía didáctica de navegación y reglas de la plataforma",
+      "Verificación de calidad: npm run lint con 0 errores y compilación de producción Next.js 16 (npm run build) exitosa al 100%"
     ],
-    "siguiente_paso_pendiente": "Definir tipos de dominio en src/types/ y contratos de servicios en src/services/contracts/."
+    "siguiente_paso_pendiente": "Revisión final de usuario y preparación para conexión con backend API REST e IA real."
   }
 }

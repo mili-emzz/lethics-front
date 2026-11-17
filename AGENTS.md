@@ -110,6 +110,7 @@ Next.js 16: APIs asíncronas para `params` y `searchParams` en componentes de se
 
 ## Referencias y Reglas Modulares
 Requerimientos del producto: [requerimientosLethics.md](file:///c:/Users/Emilia/OneDrive/Documentos/Emilia/UP/ETICA/LETHICS/lethics_frontend/requerimientosLethics.md)
+Guía de diseño y UI: [DESIGN.md](file:///c:/Users/Emilia/OneDrive/Documentos/Emilia/UP/ETICA/LETHICS/lethics_frontend/DESIGN.md)
 Registro de progreso y decisiones: [resumen_lethics.json](file:///c:/Users/Emilia/OneDrive/Documentos/Emilia/UP/ETICA/LETHICS/lethics_frontend/docs/resumen_lethics.json)
 Documentación Next.js 16: `lethics-frontend/node_modules/next/dist/docs/`
 Regla 01 - Negocio y Backend: [.agents/rules/01-reglas-negocio-backend.md](file:///c:/Users/Emilia/OneDrive/Documentos/Emilia/UP/ETICA/LETHICS/lethics_frontend/.agents/rules/01-reglas-negocio-backend.md)
