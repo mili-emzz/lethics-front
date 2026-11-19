@@ -81,25 +81,24 @@
     }
   },
   "ultima_implementacion": {
-    "fecha_actualizacion": "2026-11-17",
-    "estado_actual": "Implementación autónoma integral y 100% funcional de todas las vistas, flujos de usuario, diseño Figma, reglas de negocio y contratos en la rama implementacion-vistas.",
+    "fecha_actualizacion": "2026-11-19",
+    "estado_actual": "Rediseño integral apegado fielmente al archivo de Figma (fileKey: bu0YqNIbyAIZb3OY7jbAYY) en todas las vistas HTML/CSS con contenedores en blanco reservados para imágenes.",
     "implementado_hasta_ahora": [
       "Creación de la rama de trabajo implementacion-vistas",
       "Tipos de dominio completos en TypeScript estricto en src/types/ (sin 'any')",
       "Contratos desacoplados de servicios en src/services/contracts/",
       "Reglas de negocio puras en src/lib/rules/ (RN-01 a RN-07)",
-      "Esquemas de validación Zod en src/lib/validations/ (Login, Registro 3 pasos, Verificación 5 min, Simulador, Proyecto Final)",
+      "Esquemas de validación Zod en src/lib/validations/",
       "Capa mock con datos semilla pedagógicos realistas para los 5 módulos, lecciones, flashcards, simuladores y cuestionarios",
-      "Contexto global React en src/context/AppContext.tsx gestionando sesión, racha y progreso en tiempo real",
-      "Componentes UI base en src/components/ui/ con tokens oficiales de DESIGN.md (Boton, Input, Tarjeta, Badge, BarraProgreso, Modal)",
-      "Componentes de Layout: Header persistente con racha (#FFB006), porcentaje y avatar, BottomNav responsivo y Footer",
-      "Flujo de autenticación (auth): Landing Page pública, Login, Registro en 3 pasos, Recuperación y Verificación con temporizador de 5 minutos",
-      "Dashboard: Portada de bienvenida, reanudación inteligente de módulo y mapa de los 5 módulos con tarjetas de estado",
-      "Detalle de Módulo: CursoInfo con objetivos y plan, Lección con autoguardado de secciones, Flashcards con giro 3D y barajado, Simulador con retroalimentación IA cualitativa, Cuestionario con regla del 70% e historial de intentos",
-      "Cierre de Curso: Proyecto Final con carga/enlace validado por Zod, Examen Final Integrador condicionado a 100% y entrega, e Historial con curva de aprendizaje en Recharts",
-      "Manual de usuario con guía didáctica de navegación y reglas de la plataforma",
-      "Verificación de calidad: npm run lint con 0 errores y compilación de producción Next.js 16 (npm run build) exitosa al 100%"
+      "Inspección directa con Figma MCP (get_metadata y get_design_context) de todas las vistas de escritorio y móviles",
+      "Reconstrucción fiel a Figma del Navbar flotante tipo pill (rounded-[56px], borde negro/50, logo Lethics #FFDE97, racha #FFB006 y perfil)",
+      "LandingPage fiel a Figma: hero ILUMINA TU CÓDIGO CON ÉTICA, 3 tarjetas altas con sombras #FFEBC2/#AED5F6, cuadrícula 2x2 #3A4A88/#FFDE97 y footer oficial",
+      "Vistas (auth) fieles a Figma sin navbar/footer, botón circular flotante de regreso, inputs pill rounded-[48px] directos sobre canvas #FFF5EC y botón Google",
+      "Home/Curso (Dashboard) fiel a Figma: tarjeta superior con anillo SVG circular de progreso y pills 5 Módulos / 50 lecciones, pestañas con sombra azul y 5 dropdowns expandibles de módulos",
+      "Nueva vista Perfil Estudiante (/perfil) fiel a Figma (159:1422)",
+      "CursoShell fiel a Figma con barra lateral izquierda de 110px y tarjeta principal blanca con stepper dorado para Lección, Flashcards apiladas en mazo vertical, Simulador (entrada y feedback IA azul #F0F9FF), Cuestionario pregunta por pregunta y Resultado con círculo #3B3485",
+      "Espacios en blanco limpios reservados para todas las ilustraciones e imágenes sin modificar public/"
     ],
-    "siguiente_paso_pendiente": "Revisión final de usuario y preparación para conexión con backend API REST e IA real."
+    "siguiente_paso_pendiente": "Integrar imágenes finales provistas por la usuaria y conectar servicios API REST/IA reales."
   }
 }

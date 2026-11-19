@@ -5,236 +5,204 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  RegistroPaso1Schema,
-  RegistroPaso2Schema,
-  RegistroPaso3Schema,
-  RegistroCompletoFormData
-} from "@/lib/validations";
-import { Boton, Input, Tarjeta, Badge } from "@/components/ui";
+import { RegistroCompletoSchema, RegistroCompletoFormData } from "@/lib/validations";
 import { authService } from "@/services/mocks";
+import { LethicsLogo } from "@/components/layout/LethicsLogo";
 import { toast } from "sonner";
-import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 export default function RegistroPage() {
   const router = useRouter();
-  const [paso, setPaso] = useState<1 | 2 | 3>(1);
   const [cargando, setCargando] = useState(false);
+  const [fechaNacimiento, setFechaNacimiento] = useState("");
 
-  const [datosRegistro, setDatosRegistro] = useState<Partial<RegistroCompletoFormData>>({
-    nombreCompleto: "",
-    correo: "",
-    contrasena: "",
-    confirmarContrasena: "",
-    rol: "estudiante"
-  });
-
-  const formPaso1 = useForm({
-    resolver: zodResolver(RegistroPaso1Schema),
-    defaultValues: { nombreCompleto: datosRegistro.nombreCompleto || "" }
-  });
-
-  const formPaso2 = useForm({
-    resolver: zodResolver(RegistroPaso2Schema),
-    defaultValues: { correo: datosRegistro.correo || "" }
-  });
-
-  const formPaso3 = useForm({
-    resolver: zodResolver(RegistroPaso3Schema),
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<RegistroCompletoFormData>({
+    resolver: zodResolver(RegistroCompletoSchema),
     defaultValues: {
+      nombreCompleto: "",
+      correo: "",
       contrasena: "",
       confirmarContrasena: "",
-      rol: datosRegistro.rol || "estudiante"
+      rol: "estudiante"
     }
   });
 
-  const avanzarPaso1 = formPaso1.handleSubmit((data) => {
-    setDatosRegistro((prev) => ({ ...prev, ...data }));
-    setPaso(2);
-  });
-
-  const avanzarPaso2 = formPaso2.handleSubmit((data) => {
-    setDatosRegistro((prev) => ({ ...prev, ...data }));
-    setPaso(3);
-  });
-
-  const finalizarRegistro = formPaso3.handleSubmit(async (data) => {
+  const onSubmit = async (data: RegistroCompletoFormData) => {
     setCargando(true);
     try {
-      const payloadCompleto = {
-        nombreCompleto: datosRegistro.nombreCompleto || "",
-        correo: datosRegistro.correo || "",
+      await authService.registrarse({
+        nombreCompleto: data.nombreCompleto,
+        correo: data.correo,
         contrasena: data.contrasena,
         rol: data.rol
-      };
-
-      await authService.registrarse(payloadCompleto);
+      });
       toast.success("Cuenta creada con éxito. Te enviamos tu código de verificación.");
-      router.push(`/verificar-correo?correo=${encodeURIComponent(payloadCompleto.correo)}`);
+      router.push(`/verificar-correo?correo=${encodeURIComponent(data.correo)}`);
     } catch (err: unknown) {
       const mensaje = err instanceof Error ? err.message : "Error al procesar el registro.";
       toast.error(mensaje);
     } finally {
       setCargando(false);
     }
-  });
+  };
 
   return (
-    <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-lg">
-        <Tarjeta className="border border-[#D8D8D8] p-8 md:p-10 shadow-lg bg-white space-y-6">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#3E4B8F]">
-                Paso {paso} de 3
+    <div className="relative min-h-screen bg-[#FFF5EC] px-4 py-8 md:px-10 flex items-center justify-center">
+      {/* Botón circular flotante de regreso (Figma 76:1395) */}
+      <Link
+        href="/"
+        aria-label="Volver al inicio"
+        className="fixed left-5 top-5 md:left-7 md:top-7 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-[#3E4B8F] text-white shadow-[4px_4px_2px_rgba(0,0,0,0.25)] hover:bg-[#323D75] transition-colors"
+      >
+        <ArrowLeft className="h-6 w-6" />
+      </Link>
+
+      <div className="mx-auto w-full max-w-[1440px] grid grid-cols-1 lg:grid-cols-12 items-center gap-10 lg:gap-16 pt-10 lg:pt-0">
+        {/* Columna izquierda: Logo + Espacio en blanco para ilustración (Figma 76:1393) */}
+        <div className="lg:col-span-6 flex flex-col items-center justify-center gap-10">
+          <LethicsLogo href="/" size="lg" />
+          <div
+            aria-hidden="true"
+            className="hidden lg:block w-full max-w-[540px] aspect-[4/3] rounded-[36px] bg-white/40 border-2 border-dashed border-[#D8D8D8]"
+          />
+        </div>
+
+        {/* Columna derecha: Formulario directo sobre #FFF5EC (Figma 75:1362) */}
+        <div className="lg:col-span-6 w-full max-w-[540px] mx-auto space-y-5">
+          <h1 className="text-3xl md:text-[42px] font-extrabold text-[#3E4B8F] text-center">
+            Regístrate a Lethics
+          </h1>
+
+          {/* Botón Google + Divisor O */}
+          <div className="space-y-3">
+            <button
+              type="button"
+              onClick={() => router.push("/dashboard")}
+              className="flex h-14 md:h-[64px] w-full items-center justify-center gap-4 rounded-[48px] border border-[#A6A6A6] bg-white px-6 text-lg md:text-2xl text-[#959595] hover:bg-gray-50 transition-colors cursor-pointer"
+            >
+              <span className="flex h-8 w-8 items-center justify-center rounded-full border border-dashed border-[#D8D8D8] text-xs font-bold text-[#3E4B8F]">
+                G
               </span>
-              <Badge variant="crema" size="sm">
-                Registro Lethics
-              </Badge>
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-              <div
-                className={`h-2 rounded-full transition-all ${
-                  paso >= 1 ? "bg-[#3E4B8F]" : "bg-[#EAEAF1]"
-                }`}
-              />
-              <div
-                className={`h-2 rounded-full transition-all ${
-                  paso >= 2 ? "bg-[#3E4B8F]" : "bg-[#EAEAF1]"
-                }`}
-              />
-              <div
-                className={`h-2 rounded-full transition-all ${
-                  paso >= 3 ? "bg-[#3E4B8F]" : "bg-[#EAEAF1]"
-                }`}
-              />
+              <span>Regístrate con Google</span>
+            </button>
+
+            <div className="flex items-center gap-4 opacity-90">
+              <div className="h-[1px] flex-1 bg-[#B2B2B2]" />
+              <span className="text-xl text-[#959595]">O</span>
+              <div className="h-[1px] flex-1 bg-[#B2B2B2]" />
             </div>
           </div>
 
-          {paso === 1 && (
-            <form onSubmit={avanzarPaso1} className="space-y-6">
-              <div className="space-y-2">
-                <h1 className="text-2xl font-black text-[#1E1E1E]">¿Cómo te llamas?</h1>
-                <p className="text-sm text-[#6C6C63]">
-                  Utilizaremos tu nombre para personalizar tu expediente y emitir tu constancia.
-                </p>
-              </div>
-
-              <Input
-                etiqueta="Nombre y Apellidos"
-                placeholder="Ej. Valeria Santana Morales"
-                error={formPaso1.formState.errors.nombreCompleto?.message}
-                {...formPaso1.register("nombreCompleto")}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="space-y-1">
+              <label htmlFor="reg-nombre" className="block text-base md:text-lg text-[#1E1E1E]">
+                Nombre
+              </label>
+              <input
+                id="reg-nombre"
+                type="text"
+                placeholder="Ingrese su nombre completo"
+                className="h-13 md:h-[58px] w-full rounded-[48px] border border-[#B2B2B2] bg-white px-6 text-base text-[#1E1E1E] placeholder:font-bold placeholder:text-[#959595] focus:border-[#3E4B8F] focus:outline-none focus:ring-2 focus:ring-[#3E4B8F]/30"
+                {...register("nombreCompleto")}
               />
-
-              <Boton type="submit" size="lg" className="w-full gap-2">
-                <span>Continuar</span>
-                <ArrowRight className="h-4 w-4" />
-              </Boton>
-            </form>
-          )}
-
-          {paso === 2 && (
-            <form onSubmit={avanzarPaso2} className="space-y-6">
-              <div className="space-y-2">
-                <h1 className="text-2xl font-black text-[#1E1E1E]">Tu correo de contacto</h1>
-                <p className="text-sm text-[#6C6C63]">
-                  Enviaremos un código de seguridad con vigencia de 5 minutos (RN-01).
+              {errors.nombreCompleto && (
+                <p className="pl-4 text-xs font-medium text-[#FF5E19]">
+                  {errors.nombreCompleto.message}
                 </p>
-              </div>
+              )}
+            </div>
 
-              <Input
-                etiqueta="Correo Electrónico"
+            <div className="space-y-1">
+              <label htmlFor="reg-correo" className="block text-base md:text-lg text-[#1E1E1E]">
+                Correo electrónico
+              </label>
+              <input
+                id="reg-correo"
                 type="email"
-                placeholder="ejemplo@universidad.edu"
-                error={formPaso2.formState.errors.correo?.message}
-                {...formPaso2.register("correo")}
+                placeholder="Inserte su correo electrónico"
+                className="h-13 md:h-[58px] w-full rounded-[48px] border border-[#B2B2B2] bg-white px-6 text-base text-[#1E1E1E] placeholder:font-bold placeholder:text-[#959595] focus:border-[#3E4B8F] focus:outline-none focus:ring-2 focus:ring-[#3E4B8F]/30"
+                {...register("correo")}
               />
+              {errors.correo && (
+                <p className="pl-4 text-xs font-medium text-[#FF5E19]">{errors.correo.message}</p>
+              )}
+            </div>
 
-              <div className="flex items-center gap-3">
-                <Boton
-                  type="button"
-                  variant="secondary"
-                  onClick={() => setPaso(1)}
-                  className="flex-1"
-                >
-                  <ArrowLeft className="h-4 w-4 mr-1" /> Volver
-                </Boton>
-                <Boton type="submit" className="flex-1 gap-2">
-                  <span>Siguiente</span>
-                  <ArrowRight className="h-4 w-4" />
-                </Boton>
-              </div>
-            </form>
-          )}
+            <div className="space-y-1">
+              <label htmlFor="reg-fecha" className="block text-base md:text-lg text-[#1E1E1E]">
+                Fecha de nacimiento
+              </label>
+              <input
+                id="reg-fecha"
+                type="text"
+                value={fechaNacimiento}
+                onChange={(e) => setFechaNacimiento(e.target.value)}
+                placeholder="DD  /  MM  /  AAAA"
+                className="h-13 md:h-[58px] w-full rounded-[48px] border border-[#B2B2B2] bg-white px-6 text-base text-[#1E1E1E] placeholder:font-bold placeholder:text-[#959595] focus:border-[#3E4B8F] focus:outline-none focus:ring-2 focus:ring-[#3E4B8F]/30"
+              />
+            </div>
 
-          {paso === 3 && (
-            <form onSubmit={finalizarRegistro} className="space-y-6">
-              <div className="space-y-2">
-                <h1 className="text-2xl font-black text-[#1E1E1E]">Seguridad y Rol</h1>
-                <p className="text-sm text-[#6C6C63]">
-                  Configura tu contraseña segura y selecciona tu perfil de aprendizaje.
+            <div className="space-y-1">
+              <label htmlFor="reg-pass" className="block text-base md:text-lg text-[#1E1E1E]">
+                Contraseña
+              </label>
+              <input
+                id="reg-pass"
+                type="password"
+                placeholder="Ingrese su contraseña"
+                className="h-13 md:h-[58px] w-full rounded-[48px] border border-[#B2B2B2] bg-white px-6 text-base text-[#1E1E1E] placeholder:font-bold placeholder:text-[#959595] focus:border-[#3E4B8F] focus:outline-none focus:ring-2 focus:ring-[#3E4B8F]/30"
+                {...register("contrasena")}
+              />
+              {errors.contrasena && (
+                <p className="pl-4 text-xs font-medium text-[#FF5E19]">
+                  {errors.contrasena.message}
                 </p>
-              </div>
+              )}
+            </div>
 
-              <div className="space-y-1.5 text-left">
-                <label className="block text-sm font-semibold text-[#1E1E1E]">
-                  Perfil principal
-                </label>
-                <select
-                  {...formPaso3.register("rol")}
-                  className="w-full rounded-xl border border-[#D8D8D8] bg-white px-4 py-2.5 text-sm text-[#1E1E1E] focus:outline-none focus:ring-2 focus:ring-[#3E4B8F] min-h-[44px]"
-                >
-                  <option value="estudiante">Estudiante de Ingeniería / Ciencias de la Computación</option>
-                  <option value="profesionista">Profesionista en ejercicio / Tech Lead / Dev</option>
-                  <option value="casual">Usuario casual interesado en ética y tecnología</option>
-                </select>
-              </div>
-
-              <Input
-                etiqueta="Contraseña"
+            <div className="space-y-1">
+              <label htmlFor="reg-confirm" className="block text-base md:text-lg text-[#1E1E1E]">
+                Confirme su contraseña
+              </label>
+              <input
+                id="reg-confirm"
                 type="password"
-                placeholder="Mínimo 8 caracteres, mayúscula y número"
-                error={formPaso3.formState.errors.contrasena?.message}
-                {...formPaso3.register("contrasena")}
+                placeholder="Ingrese su contraseña"
+                className="h-13 md:h-[58px] w-full rounded-[48px] border border-[#B2B2B2] bg-white px-6 text-base text-[#1E1E1E] placeholder:font-bold placeholder:text-[#959595] focus:border-[#3E4B8F] focus:outline-none focus:ring-2 focus:ring-[#3E4B8F]/30"
+                {...register("confirmarContrasena")}
               />
+              {errors.confirmarContrasena && (
+                <p className="pl-4 text-xs font-medium text-[#FF5E19]">
+                  {errors.confirmarContrasena.message}
+                </p>
+              )}
+            </div>
 
-              <Input
-                etiqueta="Confirmar Contraseña"
-                type="password"
-                placeholder="Repite tu contraseña"
-                error={formPaso3.formState.errors.confirmarContrasena?.message}
-                {...formPaso3.register("confirmarContrasena")}
-              />
+            <div className="pt-2">
+              <button
+                type="submit"
+                disabled={cargando}
+                className="flex h-14 md:h-[68px] w-full items-center justify-center rounded-[48px] bg-[#3E4B8F] text-xl md:text-2xl font-bold text-white hover:bg-[#323D75] transition-colors disabled:opacity-50 cursor-pointer"
+              >
+                {cargando ? "Creando cuenta..." : "Comenzar"}
+              </button>
+            </div>
 
-              <div className="flex items-center gap-3 pt-2">
-                <Boton
-                  type="button"
-                  variant="secondary"
-                  onClick={() => setPaso(2)}
-                  className="flex-1"
-                >
-                  <ArrowLeft className="h-4 w-4 mr-1" /> Volver
-                </Boton>
-                <Boton
-                  type="submit"
-                  cargando={cargando}
-                  className="flex-1 gap-2"
-                >
-                  <span>Crear Cuenta</span>
-                  <Check className="h-4 w-4" />
-                </Boton>
-              </div>
-            </form>
-          )}
-
-          <div className="text-center text-sm text-[#474747] pt-2 border-t border-[#D8D8D8]/60">
-            ¿Ya tienes una cuenta?{" "}
-            <Link href="/login" className="font-bold text-[#3E4B8F] hover:underline">
-              Inicia sesión
-            </Link>
-          </div>
-        </Tarjeta>
+            <div className="text-center space-y-1 pt-1">
+              <p className="text-base text-[#1E1E1E]">¿Ya tienes una cuenta?</p>
+              <Link
+                href="/login"
+                className="inline-block text-lg font-bold text-[#3E4B8F] underline underline-offset-4 hover:opacity-80"
+              >
+                Ingresa aquí
+              </Link>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

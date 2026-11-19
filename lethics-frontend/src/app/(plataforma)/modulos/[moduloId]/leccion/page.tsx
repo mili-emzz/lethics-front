@@ -1,12 +1,11 @@
 "use client";
 
 import React, { useState, use } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/context/AppContext";
-import { Tarjeta, Boton, Badge } from "@/components/ui";
 import { modulosService } from "@/services/mocks";
-import { ArrowLeft, ArrowRight, CheckCircle2, Save } from "lucide-react";
+import { CursoShell } from "@/components/layout/CursoShell";
+import { Save, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function LeccionPage({
@@ -45,107 +44,99 @@ export default function LeccionPage({
     }
   };
 
-  const completarLeccion = async () => {
+  const avanzarOSiguiente = async () => {
+    if (!esUltima) {
+      await cambiarSeccion(seccionActual + 1);
+      return;
+    }
     setGuardando(true);
     try {
       await modulosService.marcarLeccionCompletada(modulo.id);
       await recargarProgreso();
-      toast.success("¡Lección completada con éxito!");
-      router.push(`/modulos/${modulo.id}`);
-    } catch {
-      toast.error("Error al registrar avance.");
+      toast.success("Lección completada. Continuando a Flashcards.");
+      router.push(`/modulos/${modulo.id}/flashcards`);
     } finally {
       setGuardando(false);
     }
   };
 
+  const retrocederOAnterior = async () => {
+    if (seccionActual > 0) {
+      await cambiarSeccion(seccionActual - 1);
+    } else {
+      router.push("/dashboard");
+    }
+  };
+
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
-      {/* NAVEGACIÓN SUPERIOR Y ESTADO DE AUTOGUARDADO */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D8D8D8]/60 pb-4">
-        <Link
-          href={`/modulos/${modulo.id}`}
-          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#3E4B8F] hover:underline"
-        >
-          <ArrowLeft className="h-4 w-4" /> Volver a info del módulo
-        </Link>
-        <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1.5 text-xs text-[#6C6C63] font-medium bg-white px-3 py-1 rounded-full border border-[#D8D8D8]/50">
-            <Save className={`h-3.5 w-3.5 ${guardando ? "animate-pulse text-[#3E4B8F]" : "text-emerald-600"}`} />
-            {guardando ? "Autoguardando..." : "Progreso autoguardado"}
-          </span>
-          <Badge variant="indigo" size="sm">
-            Sección {seccionActual + 1} de {secciones.length}
-          </Badge>
-        </div>
-      </div>
+    <CursoShell
+      moduloId={modulo.id}
+      pasoActivo={1}
+      onAnterior={retrocederOAnterior}
+      onSiguiente={avanzarOSiguiente}
+    >
+      {/* Contenido de 2 columnas fiel a Figma CursoInfo (120:2293) */}
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 items-center gap-8 lg:gap-10 px-1 md:px-6">
+        <div className="lg:col-span-7 flex flex-col gap-6">
+          {/* Indicador discreto de sección y autoguardado */}
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              {secciones.map((sec, idx) => (
+                <button
+                  key={sec.id}
+                  type="button"
+                  onClick={() => cambiarSeccion(idx)}
+                  className={`rounded-full px-3.5 py-1 text-xs font-bold transition-colors cursor-pointer ${
+                    idx === seccionActual
+                      ? "bg-[#3E4B8F] text-white"
+                      : "bg-[#FFF5EC] text-[#3E4B8F] hover:bg-[#FFECC2]"
+                  }`}
+                >
+                  Sección {idx + 1}
+                </button>
+              ))}
+            </div>
+            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#6C6C63]">
+              <Save className={`h-3.5 w-3.5 ${guardando ? "animate-pulse text-[#3E4B8F]" : "text-emerald-600"}`} />
+              {guardando ? "Autoguardando..." : "Autoguardado"}
+            </span>
+          </div>
 
-      {/* ÍNDICE RÁPIDO DE SECCIONES (TABS) */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-        {secciones.map((sec, idx) => (
-          <button
-            key={sec.id}
-            onClick={() => cambiarSeccion(idx)}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-all ${
-              idx === seccionActual
-                ? "bg-[#3E4B8F] text-white shadow-xs"
-                : "bg-white text-[#6C6C63] hover:bg-[#EAEAF1] border border-[#D8D8D8]/60"
-            }`}
-          >
-            Sección {idx + 1}
-          </button>
-        ))}
-      </div>
-
-      {/* CONTENIDO SOLO LECTURA DE LA LECCIÓN (RN-07) */}
-      <Tarjeta className="p-6 sm:p-10 bg-white border border-[#D8D8D8] space-y-6 shadow-sm">
-        <div className="space-y-2 border-b border-[#D8D8D8]/50 pb-4">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#3E4B8F]">
-            {modulo.titulo}
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-black text-[#1E1E1E]">
+          <h1 className="text-2xl sm:text-3xl md:text-[42px] font-extrabold text-[#444] leading-tight">
             {actual.titulo}
           </h1>
+
+          <div className="text-base sm:text-lg md:text-[24px] text-black text-justify leading-relaxed space-y-4">
+            <p className="whitespace-pre-line">{actual.contenido}</p>
+          </div>
+
+          <div className="pt-4 flex flex-wrap items-center gap-4">
+            <button
+              type="button"
+              onClick={avanzarOSiguiente}
+              disabled={guardando}
+              className="inline-flex h-12 md:h-14 items-center justify-center gap-2 rounded-[48px] bg-[#3E4B8F] px-8 text-base md:text-xl font-bold text-white hover:bg-[#323D75] transition-colors cursor-pointer"
+            >
+              {esUltima ? (
+                <>
+                  <CheckCircle2 className="h-5 w-5" />
+                  <span>Completar y pasar a Flashcards</span>
+                </>
+              ) : (
+                <span>Siguiente sección</span>
+              )}
+            </button>
+          </div>
         </div>
 
-        <div className="prose prose-slate max-w-none text-[#1E1E1E] leading-relaxed text-base sm:text-lg space-y-4">
-          <p className="whitespace-pre-line">{actual.contenido}</p>
+        {/* Espacio en blanco reservado para ilustración (Figma 118:2221) */}
+        <div className="lg:col-span-5 flex items-center justify-center">
+          <div
+            aria-hidden="true"
+            className="w-full max-w-[460px] aspect-[504/362] rounded-[24px] bg-white border-2 border-dashed border-[#D8D8D8]"
+          />
         </div>
-      </Tarjeta>
-
-      {/* BARRA DE NAVEGACIÓN INFERIOR */}
-      <div className="flex items-center justify-between pt-4">
-        <Boton
-          variant="secondary"
-          disabled={seccionActual === 0}
-          onClick={() => cambiarSeccion(seccionActual - 1)}
-          className="gap-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span>Anterior</span>
-        </Boton>
-
-        {esUltima ? (
-          <Boton
-            variant="primary"
-            onClick={completarLeccion}
-            cargando={guardando}
-            className="gap-2 bg-emerald-700 hover:bg-emerald-800"
-          >
-            <CheckCircle2 className="h-4 w-4" />
-            <span>Completar Lección</span>
-          </Boton>
-        ) : (
-          <Boton
-            variant="primary"
-            onClick={() => cambiarSeccion(seccionActual + 1)}
-            className="gap-2"
-          >
-            <span>Siguiente</span>
-            <ArrowRight className="h-4 w-4" />
-          </Boton>
-        )}
       </div>
-    </div>
+    </CursoShell>
   );
 }
